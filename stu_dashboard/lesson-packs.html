@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Portal - Lesson Packs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    :root {
+      --bg-color: #f1f5f9; --sidebar-bg: #122038; --sidebar-hover: #1e2d48;
+      --sidebar-active: #2b3e5e; --sidebar-text: #94a3b8; --text-main: #0f172a;
+      --text-muted: #64748b; --accent-blue: #2563eb; --accent-blue-hover: #1d4ed8;
+      --light-blue-bg: #eff6ff; --card-bg: #ffffff; --border-color: #e2e8f0;
+      --demo-bg: #fef3c7; --demo-text: #b45309;
+    }
+    body { background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; }
+    .app-container { display: flex; width: 100%; min-height: 100vh; }
+    .sidebar { width: 250px; background-color: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; justify-content: space-between; flex-shrink: 0; transition: all 0.3s ease-in-out; overflow: hidden; white-space: nowrap; }
+    .sidebar.collapsed { width: 0 !important; padding-left: 0 !important; padding-right: 0 !important; opacity: 0; }
+    .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; }
+    .brand-logo { width: 36px; height: 36px; background-color: var(--accent-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .brand-text h2 { font-size: 15px; font-weight: 700; }
+    .brand-text span { font-size: 12px; color: var(--sidebar-text); }
+    .nav-section { margin-top: 12px; flex-grow: 1; }
+    .section-title { font-size: 11px; font-weight: 700; color: var(--sidebar-text); margin-bottom: 12px; padding-left: 12px; }
+    .nav-menu { display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--sidebar-text); text-decoration: none; font-size: 14px; }
+    .nav-item:hover, .nav-item.active { background-color: var(--sidebar-active); color: #fff; }
+    .nav-item i { width: 18px; text-align: center; }
+    .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px; font-size: 12px; color: var(--sidebar-text); }
+    .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; padding: 24px 36px; overflow-y: auto; }
+    .top-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .sub-heading { font-size: 11px; font-weight: 700; color: #475569; }
+    .main-heading { font-size: 20px; font-weight: 800; }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .demo-badge { background-color: var(--demo-bg); color: var(--demo-text); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+    .user-selector { background-color: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+    .dashboard-content { display: flex; flex-direction: column; gap: 24px; }
+    .section-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .breadcrumbs { font-size: 11px; font-weight: 700; color: #3b82f6; margin-bottom: 4px; }
+    .dashboard-title { font-size: 32px; font-weight: 800; }
+    .dashboard-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .card { background-color: var(--card-bg); border-radius: 16px; padding: 24px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; }
+    .card.highlight-card { background-color: var(--light-blue-bg); border-color: #dbeafe; }
+    .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .card-category { font-size: 10px; font-weight: 700; color: #3b82f6; }
+    .play-icon { color: var(--accent-blue); font-size: 18px; }
+    .card-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .card-description { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+    .btn-outline { background-color: #fff; border: 1px solid var(--border-color); color: var(--accent-blue); border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; align-self: flex-start; }
+    .btn-blue { background-color: var(--accent-blue); color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 12px; font-weight: 600; cursor: pointer; align-self: flex-start; }
+    .section-title-notes { font-size: 16px; font-weight: 700; margin-top: 8px; }
+    .notes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .note-card { background-color: var(--card-bg); border-radius: 12px; padding: 16px 20px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .note-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .note-info p { font-size: 11px; color: var(--text-muted); }
+    .not-registered-box { background-color: #fff; border: 1px solid #fee2e2; border-radius: 16px; padding: 48px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .not-registered-box i { font-size: 48px; color: #ef4444; }
+    .not-registered-box h2 { font-size: 22px; font-weight: 800; color: #0f172a; }
+    .not-registered-box p { font-size: 14px; color: #64748b; max-width: 400px; }
+    .btn-go-register { background-color: var(--accent-blue); color: #fff; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <div class="brand-logo"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div class="brand-text"><h2>Learning Portal</h2><span>Student dashboard</span></div>
+        </div>
+        <div class="nav-section">
+          <div class="section-title">WORKSPACE</div>
+          <nav class="nav-menu">
+            <a href="overview.html" class="nav-item"><i class="fa-solid fa-border-all"></i><span>Overview</span></a>
+            <a href="register.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Register</span></a>
+            <a href="lesson-packs.html" class="nav-item active"><i class="fa-regular fa-folder-open"></i><span>Lesson Packs</span></a>
+            <a href="exams.html" class="nav-item"><i class="fa-regular fa-file-lines"></i><span>Exams</span></a>
+            <a href="progress.html" class="nav-item"><i class="fa-solid fa-chart-simple"></i><span>Progress</span></a>
+            <a href="profile.html" class="nav-item"><i class="fa-regular fa-id-card"></i><span>Profile</span></a>
+            <a href="info.html" class="nav-item"><i class="fa-regular fa-comment"></i><span>Info</span></a>
+            <a href="settings.html" class="nav-item"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+            <a href="#" class="nav-item"><i class="fa-regular fa-square-plus"></i><span>More</span></a>
+          </nav>
+        </div>
+      </div>
+      <div class="sidebar-footer">Grades 6–11 · Interactive prototype</div>
+    </aside>
+
+    <main class="main-wrapper">
+      <header class="top-header">
+        <div class="page-title-area" style="display: flex; align-items: center; gap: 15px;">
+          <button id="sidebar-toggle" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main);">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <span class="sub-heading">YOUR LEARNING SPACE</span>
+            <h1 class="main-heading">Lesson Packs</h1>
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class="demo-badge">DEMO DATA</span>
+          <div class="user-selector"><span>Student</span><i class="fa-solid fa-chevron-down"></i></div>
+        </div>
+      </header>
+
+      <div class="dashboard-content" id="main-content"></div>
+    </main>
+  </div>
+
+  <script>
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    sidebarToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('collapsed');
+    });
+
+    const isRegistered = localStorage.getItem('isRegistered');
+    const userGrade = localStorage.getItem('userGrade') || '6';
+    const mainContent = document.getElementById('main-content');
+
+    const gradeSyllabus = {
+      '6': {
+        lessons: [
+          { title: 'Perimeter & Area Basics', desc: 'Perimeter of plane figures and basic area calculations.' },
+          { title: 'Fractions & Decimals', desc: 'Proper, improper fractions and decimal operations.' },
+          { title: 'Directed Numbers', desc: 'Introduction to positive and negative integers.' },
+          { title: 'Angles & Lines', desc: 'Measuring and classifying basic geometric angles.' }
+        ],
+        notes: [
+          { title: 'Grade 6 Mathematics · Unit 1-5 Short Notes PDF' },
+          { title: 'Grade 6 Mathematics · Term Test Revision Worksheet' }
+        ]
+      },
+      '7': {
+        lessons: [
+          { title: 'Directed Numbers & Algebraic Expressions', desc: 'Adding/subtracting directed numbers and algebraic terms.' },
+          { title: 'Angles & Geometric Figures', desc: 'Angles in parallel lines and protractor usage.' },
+          { title: 'Percentages & Ratio', desc: 'Solving practical percentage and ratio problems.' },
+          { title: 'Equations Basics', desc: 'Solving simple one-variable linear equations.' }
+        ],
+        notes: [
+          { title: 'Grade 7 Mathematics · Algebra & Directed Numbers PDF' },
+          { title: 'Grade 7 Mathematics · Geometry Practice Sheet' }
+        ]
+      },
+      '8': {
+        lessons: [
+          { title: 'Indices & Square Root', desc: 'Laws of indices and finding square roots.' },
+          { title: 'Linear Equations & Inequalities', desc: 'Solving equations and number line representation.' },
+          { title: 'Triangles & Polygons', desc: 'Properties of triangles and exterior angles of polygons.' },
+          { title: 'Data Handling & Graphs', desc: 'Representing data in pie charts and line graphs.' }
+        ],
+        notes: [
+          { title: 'Grade 8 Mathematics · Indices & Equations Notes PDF' },
+          { title: 'Grade 8 Mathematics · Model Questions Part I & II' }
+        ]
+      },
+      '9': {
+        lessons: [
+          { title: 'Pythagoras Theorem & Triangles', desc: 'Applying Pythagoras theorem in right-angled triangles.' },
+          { title: 'Sets & Venn Diagrams', desc: 'Union, intersection, and set operations.' },
+          { title: 'Simultaneous Equations', desc: 'Solving pairs of linear simultaneous equations.' },
+          { title: 'Probability Basics', desc: 'Sample space, events, and simple probability calculations.' }
+        ],
+        notes: [
+          { title: 'Grade 9 Mathematics · Geometry & Sets Summary PDF' },
+          { title: 'Grade 9 Mathematics · Targeted Exam Papers' }
+        ]
+      },
+      '10': {
+        lessons: [
+          { title: 'Logarithms & Quadratic Equations', desc: 'Laws of logarithms and factoring quadratic equations.' },
+          { title: 'Perimeter and Area of Plane Figures', desc: 'Arc length, sector area, and compound plane shapes.' },
+          { title: 'Surface Area & Volume', desc: 'Volumes and surface areas of prisms and cylinders.' },
+          { title: 'Trigonometry Part I', desc: 'Sine, Cosine, and Tangent ratios in right triangles.' }
+        ],
+        notes: [
+          { title: 'Grade 10 Mathematics · O/L Formula & Theory Sheet PDF' },
+          { title: 'Grade 10 Mathematics · Term Evaluation Paper' }
+        ]
+      },
+      '11': {
+        lessons: [
+          { title: 'Arithmetic & Geometric Progressions (AP/GP)', desc: 'Finding nth terms and sum of terms for O/L exams.' },
+          { title: 'Circle Theorems & Geometric Proofs', desc: 'Angles in circles, cyclic quadrilaterals, and tangents.' },
+          { title: 'Matrices & Transformations', desc: 'Matrix multiplication, determinants, and plane transformations.' },
+          { title: 'Statistics & Cumulative Frequency', desc: 'Mean, median, mode, and cumulative frequency curves (ogive).' }
+        ],
+        notes: [
+          { title: 'Grade 11 Mathematics · O/L Quick Revision Master PDF' },
+          { title: 'Grade 11 Mathematics · Past Paper Model Answers' }
+        ]
+      }
+    };
+
+    if (!isRegistered || isRegistered !== 'true') {
+      mainContent.innerHTML = `
+        <div class="not-registered-box">
+          <i class="fa-solid fa-lock"></i>
+          <h2>Please register to the class first!</h2>
+          <p>Registration is required before student lesson content becomes available.</p>
+          <a href="register.html" class="btn-go-register">Go to Register Page</a>
+        </div>
+      `;
+    } else {
+      const currentData = gradeSyllabus[userGrade] || gradeSyllabus['6'];
+
+      let lessonsHTML = currentData.lessons.map((item, index) => `
+        <div class="card">
+          <div>
+            <div class="card-top"><span class="card-category">LESSON 0${index + 1} · VIDEO RECORDING</span><i class="fa-regular fa-circle-play play-icon"></i></div>
+            <h3 class="card-title">${item.title}</h3>
+            <p class="card-description">${item.desc}</p>
+          </div>
+          <button class="btn-outline">Preview recording</button>
+        </div>
+      `).join('');
+
+      let notesHTML = currentData.notes.map(item => `
+        <div class="note-card">
+          <div class="note-info"><h4>${item.title}</h4><p>Official Curriculum Material</p></div>
+          <button class="btn-outline">Download PDF</button>
+        </div>
+      `).join('');
+
+      mainContent.innerHTML = `
+        <div class="section-header">
+          <div>
+            <div class="breadcrumbs">SRI LANKA MATHEMATICS SYLLABUS · DEMO DATA</div>
+            <h2 class="dashboard-title">Grade ${userGrade} Mathematics Lesson Packs</h2>
+            <p class="dashboard-subtitle">Browse syllabus materials, live sessions, and tutes specifically tailored for Grade ${userGrade}.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+          ${lessonsHTML}
+          
+          <div class="card highlight-card">
+            <div>
+              <div class="card-top"><span class="card-category">LIVE CLASS</span></div>
+              <h3 class="card-title">Grade ${userGrade} Live Mathematics Zoom Session</h3>
+              <p class="card-description">Live class access for Grade ${userGrade} students. Click to join the live session.</p>
+            </div>
+            <button class="btn-blue">Join Zoom class</button>
+          </div>
+
+          <div class="card">
+            <div>
+              <div class="card-top"><span class="card-category">STUDY GUIDE</span></div>
+              <h3 class="card-title">Grade ${userGrade} Full Term Study Plan</h3>
+              <p class="card-description">Download the complete PDF syllabus roadmap for Grade ${userGrade}.</p>
+            </div>
+            <button class="btn-outline">Download PDF</button>
+          </div>
+        </div>
+
+        <h3 class="section-title-notes">Tutes & Notes (Grade ${userGrade})</h3>
+        <div class="notes-grid">
+          ${notesHTML}
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

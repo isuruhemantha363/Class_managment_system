@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Portal - Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    :root {
+      --bg-color: #f1f5f9; --sidebar-bg: #122038; --sidebar-hover: #1e2d48;
+      --sidebar-active: #2b3e5e; --sidebar-text: #94a3b8; --text-main: #0f172a;
+      --text-muted: #64748b; --accent-blue: #2563eb; --accent-blue-hover: #1d4ed8;
+      --light-blue-bg: #eff6ff; --card-bg: #ffffff; --border-color: #e2e8f0;
+      --demo-bg: #fef3c7; --demo-text: #b45309;
+    }
+    body { background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; }
+    .app-container { display: flex; width: 100%; min-height: 100vh; }
+    .sidebar { width: 250px; background-color: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; justify-content: space-between; flex-shrink: 0; transition: all 0.3s ease-in-out; overflow: hidden; white-space: nowrap; }
+    .sidebar.collapsed { width: 0 !important; padding-left: 0 !important; padding-right: 0 !important; opacity: 0; }
+    .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; }
+    .brand-logo { width: 36px; height: 36px; background-color: var(--accent-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .brand-text h2 { font-size: 15px; font-weight: 700; }
+    .brand-text span { font-size: 12px; color: var(--sidebar-text); }
+    .nav-section { margin-top: 12px; flex-grow: 1; }
+    .section-title { font-size: 11px; font-weight: 700; color: var(--sidebar-text); margin-bottom: 12px; padding-left: 12px; }
+    .nav-menu { display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--sidebar-text); text-decoration: none; font-size: 14px; }
+    .nav-item:hover, .nav-item.active { background-color: var(--sidebar-active); color: #fff; }
+    .nav-item i { width: 18px; text-align: center; }
+    .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px; font-size: 12px; color: var(--sidebar-text); }
+    .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; padding: 24px 36px; overflow-y: auto; }
+    .top-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .sub-heading { font-size: 11px; font-weight: 700; color: #475569; }
+    .main-heading { font-size: 20px; font-weight: 800; }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .demo-badge { background-color: var(--demo-bg); color: var(--demo-text); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+    .user-selector { background-color: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+    .dashboard-content { display: flex; flex-direction: column; gap: 24px; }
+    .breadcrumbs { font-size: 11px; font-weight: 700; color: #3b82f6; margin-bottom: 4px; }
+    .dashboard-title { font-size: 32px; font-weight: 800; }
+    .dashboard-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .profile-grid { display: grid; grid-template-columns: 0.38fr 0.62fr; gap: 24px; }
+    .card { background-color: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); padding: 28px; }
+    .left-profile-card { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .avatar-container { width: 100px; height: 100px; border-radius: 50%; overflow: hidden; margin-bottom: 12px; border: 2px solid var(--border-color); }
+    .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+    .upload-photo-label { font-size: 12px; color: var(--accent-blue); font-weight: 600; cursor: pointer; margin-bottom: 16px; display: inline-block; }
+    #avatar-input { display: none; }
+    .profile-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .profile-role { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .reg-number-box { background-color: var(--light-blue-bg); border: 1px solid #dbeafe; border-radius: 12px; padding: 14px; width: 100%; text-align: center; }
+    .reg-number-label { font-size: 10px; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; margin-bottom: 4px; display: block; }
+    .reg-number-value { font-size: 14px; font-weight: 700; }
+    .section-card-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .form-input { padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; outline: none; width: 100%; background: #fff; }
+    .form-input[readonly] { background-color: #f8fafc; color: #475569; }
+    .form-footer-note { font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .btn-save { background-color: var(--accent-blue); color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    @media (max-width: 1024px) { .profile-grid, .form-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <div class="brand-logo"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div class="brand-text"><h2>Learning Portal</h2><span>Student dashboard</span></div>
+        </div>
+        <div class="nav-section">
+          <div class="section-title">WORKSPACE</div>
+          <nav class="nav-menu">
+            <a href="overview.html" class="nav-item"><i class="fa-solid fa-border-all"></i><span>Overview</span></a>
+            <a href="register.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Register</span></a>
+            <a href="lesson-packs.html" class="nav-item"><i class="fa-regular fa-folder"></i><span>Lesson Packs</span></a>
+            <a href="exams.html" class="nav-item"><i class="fa-regular fa-file-lines"></i><span>Exams</span></a>
+            <a href="progress.html" class="nav-item"><i class="fa-solid fa-chart-simple"></i><span>Progress</span></a>
+            <a href="profile.html" class="nav-item active"><i class="fa-regular fa-id-card"></i><span>Profile</span></a>
+            <a href="info.html" class="nav-item"><i class="fa-regular fa-comment"></i><span>Info</span></a>
+            <a href="settings.html" class="nav-item"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+            <a href="#" class="nav-item"><i class="fa-regular fa-square-plus"></i><span>More</span></a>
+          </nav>
+        </div>
+      </div>
+      <div class="sidebar-footer">Grades 6–11 · Interactive prototype</div>
+    </aside>
+
+    <main class="main-wrapper">
+      <header class="top-header">
+        <div class="page-title-area" style="display: flex; align-items: center; gap: 15px;">
+          <button id="sidebar-toggle" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main);">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <span class="sub-heading">YOUR LEARNING SPACE</span>
+            <h1 class="main-heading">Profile</h1>
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class="demo-badge">DEMO DATA</span>
+          <div class="user-selector"><span>Student</span><i class="fa-solid fa-chevron-down"></i></div>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div>
+          <div class="breadcrumbs">AUTO-SYNCED PROFILE · DEMO DATA</div>
+          <h2 class="dashboard-title">Student profile</h2>
+          <p class="dashboard-subtitle">A sample record showing information for an auto-synced student profile.</p>
+        </div>
+
+        <div class="profile-grid">
+          <div class="card left-profile-card">
+            <div class="avatar-container">
+              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200" class="avatar-img" id="avatar-preview">
+            </div>
+            <label for="avatar-input" class="upload-photo-label"><i class="fa-solid fa-camera"></i> Change profile picture</label>
+            <input type="file" id="avatar-input" accept="image/*">
+            <h3 class="profile-name" id="display-name">Alex Perera</h3>
+            <p class="profile-role" id="display-role">Student · Grade 7</p>
+            <div class="reg-number-box">
+              <span class="reg-number-label">STUDENT REGISTRATION NUMBER</span>
+              <div class="reg-number-value">STU-2026-0814</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="section-card-title">Personal & guardian details</h3>
+            <form id="profile-form">
+              <div class="form-grid">
+                <div class="form-group"><label>FIRST NAME</label><input type="text" id="first-name" class="form-input" readonly></div>
+                <div class="form-group"><label>LAST NAME</label><input type="text" id="last-name" class="form-input" readonly></div>
+                <div class="form-group"><label>DATE OF BIRTH</label><input type="text" id="dob" class="form-input" readonly value="14 August 2011"></div>
+                <div class="form-group"><label>ADDRESS</label><input type="text" id="address" class="form-input" placeholder="Enter your address"></div>
+                <div class="form-group"><label>SCHOOL</label><input type="text" id="school" class="form-input" placeholder="Enter your school"></div>
+                <div class="form-group">
+                  <label>DISTRICT</label>
+                  <select id="district" class="form-input">
+                    <option value="" disabled selected>Select your district</option>
+                    <option value="Ampara">Ampara</option><option value="Anuradhapura">Anuradhapura</option><option value="Badulla">Badulla</option><option value="Batticaloa">Batticaloa</option><option value="Colombo">Colombo</option><option value="Galle">Galle</option><option value="Gampaha">Gampaha</option><option value="Hambantota">Hambantota</option><option value="Jaffna">Jaffna</option><option value="Kalutara">Kalutara</option><option value="Kandy">Kandy</option><option value="Kegalle">Kegalle</option><option value="Kilinochchi">Kilinochchi</option><option value="Kurunegala">Kurunegala</option><option value="Mannar">Mannar</option><option value="Matale">Matale</option><option value="Matara">Matara</option><option value="Monaragala">Monaragala</option><option value="Mullaitivu">Mullaitivu</option><option value="Nuwara Eliya">Nuwara Eliya</option><option value="Polonnaruwa">Polonnaruwa</option><option value="Puttalam">Puttalam</option><option value="Ratnapura">Ratnapura</option><option value="Trincomalee">Trincomalee</option><option value="Vavuniya">Vavuniya</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>EMAIL</label><input type="email" id="email" class="form-input" placeholder="Enter email"></div>
+                <div class="form-group"><label>STUDENT MOBILE NUMBER</label><input type="text" id="mobile" class="form-input" placeholder="10-digit number" maxlength="10"></div>
+                <div class="form-group"><label>GUARDIAN NAME</label><input type="text" id="guardian-name" class="form-input" placeholder="Guardian name"></div>
+                <div class="form-group"><label>GUARDIAN CONTACT PHONE</label><input type="text" id="guardian-phone" class="form-input" placeholder="10-digit number" maxlength="10"></div>
+              </div>
+              <div class="form-footer-note">
+                <span>Changes sync locally.</span>
+                <button type="submit" class="btn-save">Save details</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    sidebarToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('collapsed');
+    });
+
+    document.getElementById('first-name').value = localStorage.getItem('firstName') || 'Alex';
+    document.getElementById('last-name').value = localStorage.getItem('lastName') || 'Perera';
+    document.getElementById('display-name').textContent = `${localStorage.getItem('firstName') || 'Alex'} ${localStorage.getItem('lastName') || 'Perera'}`;
+    document.getElementById('display-role').textContent = `Student · Grade ${localStorage.getItem('userGrade') || '7'}`;
+
+    document.getElementById('address').value = localStorage.getItem('userAddress') || '';
+    document.getElementById('school').value = localStorage.getItem('userSchool') || '';
+    document.getElementById('district').value = localStorage.getItem('userDistrict') || '';
+    document.getElementById('email').value = localStorage.getItem('userEmail') || '';
+    document.getElementById('mobile').value = localStorage.getItem('userMobile') || '';
+    document.getElementById('guardian-name').value = localStorage.getItem('userGuardianName') || '';
+    document.getElementById('guardian-phone').value = localStorage.getItem('userGuardianPhone') || '';
+    
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) document.getElementById('avatar-preview').src = savedAvatar;
+
+    document.getElementById('avatar-input').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          document.getElementById('avatar-preview').src = event.target.result;
+          localStorage.setItem('userAvatar', event.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById('profile-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const mobile = document.getElementById('mobile').value.trim();
+      const gPhone = document.getElementById('guardian-phone').value.trim();
+      const regex = /^\d{10}$/;
+
+      if (mobile && !regex.test(mobile)) { alert('Student mobile number must be 10 digits!'); return; }
+      if (gPhone && !regex.test(gPhone)) { alert('Guardian phone number must be 10 digits!'); return; }
+
+      localStorage.setItem('userAddress', document.getElementById('address').value);
+      localStorage.setItem('userSchool', document.getElementById('school').value);
+      localStorage.setItem('userDistrict', document.getElementById('district').value);
+      localStorage.setItem('userEmail', document.getElementById('email').value);
+      localStorage.setItem('userMobile', mobile);
+      localStorage.setItem('userGuardianName', document.getElementById('guardian-name').value);
+      localStorage.setItem('userGuardianPhone', gPhone);
+      alert('Profile details saved successfully!');
+    });
+  </script>
+</body>
+</html>

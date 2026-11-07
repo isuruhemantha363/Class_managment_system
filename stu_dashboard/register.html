@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Portal - Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    :root {
+      --bg-color: #f1f5f9; --sidebar-bg: #122038; --sidebar-hover: #1e2d48;
+      --sidebar-active: #2b3e5e; --sidebar-text: #94a3b8; --text-main: #0f172a;
+      --text-muted: #64748b; --accent-blue: #2563eb; --accent-blue-hover: #1d4ed8;
+      --light-blue-bg: #eff6ff; --card-bg: #ffffff; --border-color: #e2e8f0;
+      --demo-bg: #fef3c7; --demo-text: #b45309;
+    }
+    body { background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; }
+    .app-container { display: flex; width: 100%; min-height: 100vh; }
+    .sidebar { width: 250px; background-color: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; justify-content: space-between; flex-shrink: 0; transition: all 0.3s ease-in-out; overflow: hidden; white-space: nowrap; }
+    .sidebar.collapsed { width: 0 !important; padding-left: 0 !important; padding-right: 0 !important; opacity: 0; }
+    .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; }
+    .brand-logo { width: 36px; height: 36px; background-color: var(--accent-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .brand-text h2 { font-size: 15px; font-weight: 700; }
+    .brand-text span { font-size: 12px; color: var(--sidebar-text); }
+    .nav-section { margin-top: 12px; flex-grow: 1; }
+    .section-title { font-size: 11px; font-weight: 700; color: var(--sidebar-text); margin-bottom: 12px; padding-left: 12px; }
+    .nav-menu { display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--sidebar-text); text-decoration: none; font-size: 14px; }
+    .nav-item:hover, .nav-item.active { background-color: var(--sidebar-active); color: #fff; }
+    .nav-item i { width: 18px; text-align: center; }
+    .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px; font-size: 12px; color: var(--sidebar-text); }
+    .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; padding: 24px 36px; overflow-y: auto; }
+    .top-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .sub-heading { font-size: 11px; font-weight: 700; color: #475569; }
+    .main-heading { font-size: 20px; font-weight: 800; }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .demo-badge { background-color: var(--demo-bg); color: var(--demo-text); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+    .user-selector { background-color: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+    .dashboard-content { display: flex; flex-direction: column; gap: 20px; }
+    .grid-two-columns { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; }
+    .grid-three-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card { background-color: var(--card-bg); border-radius: 16px; padding: 32px; border: 1px solid var(--border-color); }
+    .card-subtitle { font-size: 11px; font-weight: 700; color: #3b82f6; display: block; margin-bottom: 8px; }
+    .hero-title { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+    .hero-description { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .registration-box { background-color: var(--light-blue-bg); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .reg-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .reg-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 10px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+    .form-controls { display: flex; gap: 12px; }
+    .custom-select { flex-grow: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; outline: none; }
+    .btn-primary { background-color: var(--accent-blue); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .shortcut-box { display: flex; flex-direction: column; gap: 8px; }
+    .btn-secondary { background: #fff; border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--accent-blue); cursor: pointer; display: flex; align-items: center; gap: 8px; width: fit-content; }
+    .shortcut-note { font-size: 11px; color: var(--text-muted); }
+    .banner-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+    .banner-image-container { width: 100%; height: 220px; }
+    .banner-img { width: 100%; height: 100%; object-fit: cover; }
+    .banner-content { padding: 24px; }
+    .banner-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .banner-text { font-size: 12px; color: var(--text-muted); }
+    .feature-card { padding: 20px 24px; }
+    .feature-header { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .feature-text { font-size: 12px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <div class="brand-logo"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div class="brand-text"><h2>Learning Portal</h2><span>Student dashboard</span></div>
+        </div>
+        <div class="nav-section">
+          <div class="section-title">WORKSPACE</div>
+          <nav class="nav-menu">
+            <a href="overview.html" class="nav-item"><i class="fa-solid fa-border-all"></i><span>Overview</span></a>
+            <a href="register.html" class="nav-item active"><i class="fa-regular fa-user"></i><span>Register</span></a>
+            <a href="lesson-packs.html" class="nav-item"><i class="fa-regular fa-folder"></i><span>Lesson Packs</span></a>
+            <a href="exams.html" class="nav-item"><i class="fa-regular fa-file-lines"></i><span>Exams</span></a>
+            <a href="progress.html" class="nav-item"><i class="fa-solid fa-chart-simple"></i><span>Progress</span></a>
+            <a href="profile.html" class="nav-item"><i class="fa-regular fa-id-card"></i><span>Profile</span></a>
+            <a href="info.html" class="nav-item"><i class="fa-regular fa-comment"></i><span>Info</span></a>
+            <a href="settings.html" class="nav-item"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+            <a href="#" class="nav-item"><i class="fa-regular fa-square-plus"></i><span>More</span></a>
+          </nav>
+        </div>
+      </div>
+      <div class="sidebar-footer">Grades 6–11 · Interactive prototype</div>
+    </aside>
+
+    <main class="main-wrapper">
+      <header class="top-header">
+        <div class="page-title-area" style="display: flex; align-items: center; gap: 15px;">
+          <button id="sidebar-toggle" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main);">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <span class="sub-heading">YOUR LEARNING SPACE</span>
+            <h1 class="main-heading">Register</h1>
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class="demo-badge">DEMO DATA</span>
+          <div class="user-selector"><span>Student</span><i class="fa-solid fa-chevron-down"></i></div>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="grid-two-columns">
+          <div class="card welcome-card">
+            <span class="card-subtitle">WELCOME TO YOUR LEARNING SPACE</span>
+            <h2 class="hero-title">A clearer path to every lesson.</h2>
+            <p class="hero-description">One place for lesson packs, assessments, progress, and class resources. Select your grade to enter the student demo.</p>
+
+            <div class="registration-box">
+              <h3 class="reg-title">Start with your grade</h3>
+              <p class="reg-subtitle">Registration is required before student lesson content becomes available.</p>
+              
+              <div class="form-group">
+                <label for="grade-select">REGISTERED GRADE</label>
+                <div class="form-controls">
+                  <select id="grade-select" class="custom-select">
+                    <option value="" disabled selected>Choose your grade</option>
+                    <option value="6">Grade 6</option>
+                    <option value="7">Grade 7</option>
+                    <option value="8">Grade 8</option>
+                    <option value="9">Grade 9</option>
+                    <option value="10">Grade 10</option>
+                    <option value="11">Grade 11</option>
+                  </select>
+                  <button class="btn-primary" id="register-btn">Register & enter</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="shortcut-box">
+              <button class="btn-secondary" id="returning-student-btn">
+                I'm a returning student <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <span class="shortcut-note">Demo shortcut: opens an example Grade stream without a real sign-in.</span>
+            </div>
+          </div>
+
+          <div class="card banner-card">
+            <div class="banner-image-container">
+              <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=1200" class="banner-img">
+            </div>
+            <div class="banner-content">
+              <span class="card-subtitle">ONE CONNECTED PORTAL</span>
+              <h3 class="banner-title">Built around the whole learning journey.</h3>
+              <p class="banner-text">A shared view of learning for students, teachers, and parents.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-three-columns">
+          <div class="card feature-card"><div class="feature-header">01 / Learn</div><p class="feature-text">Explore recordings, Tutes & Notes, and study guides.</p></div>
+          <div class="card feature-card"><div class="feature-header">02 / Practice</div><p class="feature-text">Try an instant-evaluation quiz and review exam resources.</p></div>
+          <div class="card feature-card"><div class="feature-header">03 / Grow</div><p class="feature-text">See monthly performance, grades, and upcoming exams.</p></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    sidebarToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('collapsed');
+    });
+
+    const registerBtn = document.getElementById('register-btn');
+    const gradeSelect = document.getElementById('grade-select');
+    const returningBtn = document.getElementById('returning-student-btn');
+
+    registerBtn.addEventListener('click', function() {
+      const selectedGrade = gradeSelect.value;
+      if (!selectedGrade) {
+        alert('Please select your grade first!');
+      } else {
+        localStorage.setItem('isRegistered', 'true');
+        localStorage.setItem('userGrade', selectedGrade);
+        window.location.href = 'lesson-packs.html';
+      }
+    });
+
+    returningBtn.addEventListener('click', function() {
+      localStorage.setItem('isRegistered', 'true');
+      localStorage.setItem('userGrade', '9');
+      window.location.href = 'lesson-packs.html';
+    });
+  </script>
+</body>
+</html>

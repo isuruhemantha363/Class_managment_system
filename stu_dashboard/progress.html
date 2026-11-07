@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Portal - Progress</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    :root {
+      --bg-color: #f1f5f9; --sidebar-bg: #122038; --sidebar-hover: #1e2d48;
+      --sidebar-active: #2b3e5e; --sidebar-text: #94a3b8; --text-main: #0f172a;
+      --text-muted: #64748b; --accent-blue: #3b82f6; --accent-blue-dark: #2563eb;
+      --light-blue-bg: #eff6ff; --card-bg: #ffffff; --border-color: #e2e8f0;
+      --demo-bg: #fef3c7; --demo-text: #b45309;
+    }
+    body { background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; }
+    .app-container { display: flex; width: 100%; min-height: 100vh; }
+    .sidebar { width: 250px; background-color: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; justify-content: space-between; flex-shrink: 0; transition: all 0.3s ease-in-out; overflow: hidden; white-space: nowrap; }
+    .sidebar.collapsed { width: 0 !important; padding-left: 0 !important; padding-right: 0 !important; opacity: 0; }
+    .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; }
+    .brand-logo { width: 36px; height: 36px; background-color: var(--accent-blue-dark); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .brand-text h2 { font-size: 15px; font-weight: 700; }
+    .brand-text span { font-size: 12px; color: var(--sidebar-text); }
+    .nav-section { margin-top: 12px; flex-grow: 1; }
+    .section-title { font-size: 11px; font-weight: 700; color: var(--sidebar-text); margin-bottom: 12px; padding-left: 12px; }
+    .nav-menu { display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--sidebar-text); text-decoration: none; font-size: 14px; }
+    .nav-item:hover, .nav-item.active { background-color: var(--sidebar-active); color: #fff; }
+    .nav-item i { width: 18px; text-align: center; }
+    .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px; font-size: 12px; color: var(--sidebar-text); }
+    .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; padding: 24px 36px; overflow-y: auto; }
+    .top-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .sub-heading { font-size: 11px; font-weight: 700; color: #475569; }
+    .main-heading { font-size: 20px; font-weight: 800; }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .demo-badge { background-color: var(--demo-bg); color: var(--demo-text); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+    .user-selector { background-color: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+    .dashboard-content { display: flex; flex-direction: column; gap: 24px; }
+    .breadcrumbs { font-size: 11px; font-weight: 700; color: #3b82f6; margin-bottom: 4px; }
+    .dashboard-title { font-size: 32px; font-weight: 800; }
+    .dashboard-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .grid-top-section { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 24px; }
+    .right-cards-column { display: flex; flex-direction: column; gap: 20px; }
+    .card { background-color: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); padding: 28px; }
+    .chart-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .chart-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .chart-subtitle { font-size: 12px; color: var(--text-muted); }
+    .sample-scores-badge { background-color: #fef3c7; color: #b45309; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 12px; }
+    .chart-container { display: flex; gap: 16px; height: 220px; align-items: flex-end; padding-top: 20px; }
+    .y-axis { display: flex; flex-direction: column; justify-content: space-between; height: 100%; font-size: 12px; color: var(--text-muted); padding-right: 12px; }
+    .bars-area { display: flex; justify-content: space-between; align-items: flex-end; flex-grow: 1; height: 100%; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+    .bar-wrapper { display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1; height: 100%; justify-content: flex-end; }
+    .bar { width: 42px; background-color: var(--accent-blue); border-radius: 6px 6px 0 0; cursor: pointer; }
+    .bar-label { font-size: 12px; color: var(--text-muted); }
+    .chart-legend { display: flex; align-items: center; gap: 8px; margin-top: 24px; font-size: 12px; color: var(--text-muted); }
+    .legend-box { width: 12px; height: 12px; background-color: var(--accent-blue); border-radius: 2px; }
+    .card-blue-bg { background-color: var(--light-blue-bg); border-color: #dbeafe; }
+    .card-category { font-size: 10px; font-weight: 700; color: #3b82f6; text-transform: uppercase; display: block; margin-bottom: 12px; }
+    .exam-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+    .countdown-box { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px; }
+    .count-number { font-size: 44px; font-weight: 800; color: var(--accent-blue-dark); line-height: 1; }
+    .count-text { font-size: 14px; font-weight: 600; }
+    .exam-date-text { font-size: 12px; color: var(--text-muted); }
+    .spectrum-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+    .spectrum-content { display: flex; align-items: center; gap: 20px; }
+    .grade-badge { font-size: 52px; font-weight: 800; color: var(--accent-blue-dark); line-height: 1; }
+    .spectrum-details h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .spectrum-details p { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+    @media (max-width: 900px) { .grid-top-section { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <div class="brand-logo"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div class="brand-text"><h2>Learning Portal</h2><span>Student dashboard</span></div>
+        </div>
+        <div class="nav-section">
+          <div class="section-title">WORKSPACE</div>
+          <nav class="nav-menu">
+            <a href="overview.html" class="nav-item"><i class="fa-solid fa-border-all"></i><span>Overview</span></a>
+            <a href="register.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Register</span></a>
+            <a href="lesson-packs.html" class="nav-item"><i class="fa-regular fa-folder"></i><span>Lesson Packs</span></a>
+            <a href="exams.html" class="nav-item"><i class="fa-regular fa-file-lines"></i><span>Exams</span></a>
+            <a href="progress.html" class="nav-item active"><i class="fa-solid fa-chart-simple"></i><span>Progress</span></a>
+            <a href="profile.html" class="nav-item"><i class="fa-regular fa-id-card"></i><span>Profile</span></a>
+            <a href="info.html" class="nav-item"><i class="fa-regular fa-comment"></i><span>Info</span></a>
+            <a href="settings.html" class="nav-item"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+            <a href="#" class="nav-item"><i class="fa-regular fa-square-plus"></i><span>More</span></a>
+          </nav>
+        </div>
+      </div>
+      <div class="sidebar-footer">Grades 6–11 · Interactive prototype</div>
+    </aside>
+
+    <main class="main-wrapper">
+      <header class="top-header">
+        <div class="page-title-area" style="display: flex; align-items: center; gap: 15px;">
+          <button id="sidebar-toggle" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main);">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <span class="sub-heading">YOUR LEARNING SPACE</span>
+            <h1 class="main-heading">Progress</h1>
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class="demo-badge">DEMO DATA</span>
+          <div class="user-selector"><span>Student</span><i class="fa-solid fa-chevron-down"></i></div>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div>
+          <div class="breadcrumbs">ANALYTICS & PROGRESS PORTAL · DEMO DATA</div>
+          <h2 class="dashboard-title">Progress at a glance</h2>
+          <p class="dashboard-subtitle">Follow a sample learner's monthly test performance and upcoming assessment.</p>
+        </div>
+
+        <div class="grid-top-section">
+          <div class="card">
+            <div class="chart-card-header">
+              <div>
+                <h3 class="chart-title">Monthly performance</h3>
+                <p class="chart-subtitle">Monthly test score, out of 100.</p>
+              </div>
+              <span class="sample-scores-badge">SAMPLE SCORES</span>
+            </div>
+            <div class="chart-container">
+              <div class="y-axis"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div>
+              <div class="bars-area">
+                <div class="bar-wrapper"><div class="bar" style="height: 68%;"></div><span class="bar-label">May</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 74%;"></div><span class="bar-label">Jun</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 78%;"></div><span class="bar-label">Jul</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 82%;"></div><span class="bar-label">Aug</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 85%;"></div><span class="bar-label">Sep</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 90%;"></div><span class="bar-label">Oct</span></div>
+              </div>
+            </div>
+            <div class="chart-legend"><div class="legend-box"></div><span>Monthly test score (%)</span></div>
+          </div>
+
+          <div class="right-cards-column">
+            <div class="card card-blue-bg">
+              <span class="card-category">UPCOMING EXAM · SAMPLE SCHEDULE</span>
+              <h3 class="exam-title">Mathematics assessment</h3>
+              <div class="countdown-box"><span class="count-number">6</span><span class="count-text">days remaining</span></div>
+              <p class="exam-date-text">Illustrative exam date: 29 October 2026</p>
+            </div>
+            <div class="card">
+              <span class="card-category">GRADE SPECTRUM · DEMO</span>
+              <h3 class="spectrum-title">A–F classification</h3>
+              <div class="spectrum-content">
+                <span class="grade-badge">A</span>
+                <div class="spectrum-details">
+                  <h4>Latest score: 84%</h4>
+                  <p>A: 80–100 · B: 70–79 · C: 60–69<br>D: 50–59 · F: below 50</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    sidebarToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('collapsed');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Portal - Exams & Assessments</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    :root {
+      --bg-color: #f1f5f9; --sidebar-bg: #122038; --sidebar-hover: #1e2d48;
+      --sidebar-active: #2b3e5e; --sidebar-text: #94a3b8; --text-main: #0f172a;
+      --text-muted: #64748b; --accent-blue: #2563eb; --accent-blue-hover: #1d4ed8;
+      --light-blue-bg: #eff6ff; --card-bg: #ffffff; --border-color: #e2e8f0;
+      --demo-bg: #fef3c7; --demo-text: #b45309;
+    }
+    body { background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; }
+    .app-container { display: flex; width: 100%; min-height: 100vh; }
+    .sidebar { width: 250px; background-color: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; justify-content: space-between; flex-shrink: 0; transition: all 0.3s ease-in-out; overflow: hidden; white-space: nowrap; }
+    .sidebar.collapsed { width: 0 !important; padding-left: 0 !important; padding-right: 0 !important; opacity: 0; }
+    .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; }
+    .brand-logo { width: 36px; height: 36px; background-color: var(--accent-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .brand-text h2 { font-size: 15px; font-weight: 700; }
+    .brand-text span { font-size: 12px; color: var(--sidebar-text); }
+    .nav-section { margin-top: 12px; flex-grow: 1; }
+    .section-title { font-size: 11px; font-weight: 700; color: var(--sidebar-text); margin-bottom: 12px; padding-left: 12px; }
+    .nav-menu { display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--sidebar-text); text-decoration: none; font-size: 14px; }
+    .nav-item:hover, .nav-item.active { background-color: var(--sidebar-active); color: #fff; }
+    .nav-item i { width: 18px; text-align: center; }
+    .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px; font-size: 12px; color: var(--sidebar-text); }
+    .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; padding: 24px 36px; overflow-y: auto; }
+    .top-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .sub-heading { font-size: 11px; font-weight: 700; color: #475569; }
+    .main-heading { font-size: 20px; font-weight: 800; }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .demo-badge { background-color: var(--demo-bg); color: var(--demo-text); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+    .user-selector { background-color: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+    .dashboard-content { display: flex; flex-direction: column; gap: 24px; }
+    .breadcrumbs { font-size: 11px; font-weight: 700; color: #3b82f6; margin-bottom: 4px; }
+    .dashboard-title { font-size: 32px; font-weight: 800; }
+    .dashboard-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .card { background-color: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); padding: 24px; }
+    .grid-top-section { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; }
+    .right-cards-column { display: flex; flex-direction: column; gap: 20px; }
+    .card-category { font-size: 10px; font-weight: 700; color: #3b82f6; text-transform: uppercase; display: block; margin-bottom: 8px; }
+    .quiz-title { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+    .quiz-question { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .option-label { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; font-size: 14px; }
+    .option-label:hover { background-color: #f8fafc; }
+    .btn-primary { background-color: var(--accent-blue); color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .result-box { margin-top: 16px; padding: 16px 20px; border-radius: 12px; background-color: var(--light-blue-bg); color: #1e3a8a; font-size: 13px; font-weight: 600; display: none; }
+    .snapshot-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+    .snapshot-stats { display: flex; gap: 32px; margin-bottom: 12px; }
+    .stat-item span { font-size: 10px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px; }
+    .stat-item h3 { font-size: 22px; font-weight: 800; }
+    .snapshot-note { font-size: 11px; color: var(--text-muted); }
+    .upload-box { border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; margin-top: 12px; }
+    .section-heading-text { font-size: 18px; font-weight: 700; }
+    .grid-three-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .resource-card { display: flex; flex-direction: column; justify-content: space-between; min-height: 120px; }
+    .resource-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .resource-desc { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
+    .btn-outline { background-color: #fff; border: 1px solid var(--border-color); color: var(--accent-blue); border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; align-self: flex-start; }
+    @media (max-width: 900px) { .grid-top-section, .grid-three-columns { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <div class="brand-logo"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div class="brand-text"><h2>Learning Portal</h2><span>Student dashboard</span></div>
+        </div>
+        <div class="nav-section">
+          <div class="section-title">WORKSPACE</div>
+          <nav class="nav-menu">
+            <a href="overview.html" class="nav-item"><i class="fa-solid fa-border-all"></i><span>Overview</span></a>
+            <a href="register.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Register</span></a>
+            <a href="lesson-packs.html" class="nav-item"><i class="fa-regular fa-folder"></i><span>Lesson Packs</span></a>
+            <a href="exams.html" class="nav-item active"><i class="fa-regular fa-file-lines"></i><span>Exams</span></a>
+            <a href="progress.html" class="nav-item"><i class="fa-solid fa-chart-simple"></i><span>Progress</span></a>
+            <a href="profile.html" class="nav-item"><i class="fa-regular fa-id-card"></i><span>Profile</span></a>
+            <a href="info.html" class="nav-item"><i class="fa-regular fa-comment"></i><span>Info</span></a>
+            <a href="settings.html" class="nav-item"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+            <a href="#" class="nav-item"><i class="fa-regular fa-square-plus"></i><span>More</span></a>
+          </nav>
+        </div>
+      </div>
+      <div class="sidebar-footer">Grades 6–11 · Interactive prototype</div>
+    </aside>
+
+    <main class="main-wrapper">
+      <header class="top-header">
+        <div class="page-title-area" style="display: flex; align-items: center; gap: 15px;">
+          <button id="sidebar-toggle" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main);">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <span class="sub-heading">YOUR LEARNING SPACE</span>
+            <h1 class="main-heading">Exams</h1>
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class="demo-badge">DEMO DATA</span>
+          <div class="user-selector"><span>Student</span><i class="fa-solid fa-chevron-down"></i></div>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div>
+          <div class="breadcrumbs">ASSESSMENT HUB · DEMO DATA</div>
+          <h2 class="dashboard-title">Exams & assessments</h2>
+          <p class="dashboard-subtitle">Practice with instant feedback and explore the proposed paper-resource workflow.</p>
+        </div>
+
+        <div class="grid-top-section">
+          <div class="card">
+            <span class="card-category">ONLINE QUIZ · INSTANT EVALUATION</span>
+            <h3 class="quiz-title">Quick check · Algebra</h3>
+            <p class="quiz-question">What is 4 × (2 + 2)?</p>
+            <form id="quiz-form">
+              <div class="quiz-options">
+                <label class="option-label"><input type="radio" name="quiz-answer" value="12"> 12</label>
+                <label class="option-label"><input type="radio" name="quiz-answer" value="16"> 16</label>
+                <label class="option-label"><input type="radio" name="quiz-answer" value="20"> 20</label>
+              </div>
+              <button type="submit" class="btn-primary">Submit answer</button>
+            </form>
+            <div id="result-box" class="result-box"></div>
+          </div>
+
+          <div class="right-cards-column">
+            <div class="card">
+              <h3 class="snapshot-title">Class snapshot</h3>
+              <div class="snapshot-stats">
+                <div class="stat-item"><span>CURRENT RANK</span><h3>8 / 32</h3></div>
+                <div class="stat-item"><span>CLASS AVERAGE</span><h3>72%</h3></div>
+              </div>
+              <p class="snapshot-note">Illustrative figures; quiz results do not change class ranking.</p>
+            </div>
+            <div class="card">
+              <h3 class="snapshot-title">Student work</h3>
+              <p class="snapshot-note">Select student work for a local demo preview.</p>
+              <div class="upload-box"><input type="file"></div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="section-heading-text">Paper resources</h3>
+        <div class="grid-three-columns">
+          <div class="card resource-card">
+            <div><div class="resource-title">Past papers</div><p class="resource-desc">Past papers · demo resource slot</p></div>
+            <button class="btn-outline">View sample status</button>
+          </div>
+          <div class="card resource-card">
+            <div><div class="resource-title">Model papers</div><p class="resource-desc">Model papers · demo resource slot</p></div>
+            <button class="btn-outline">View sample status</button>
+          </div>
+          <div class="card resource-card">
+            <div><div class="resource-title">Answer keys</div><p class="resource-desc">Answer keys · demo resource slot</p></div>
+            <button class="btn-outline">View sample status</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    sidebarToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('collapsed');
+    });
+
+    const quizForm = document.getElementById('quiz-form');
+    const resultBox = document.getElementById('result-box');
+
+    quizForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const selectedOption = document.querySelector('input[name="quiz-answer"]:checked');
+      if (!selectedOption) {
+        alert('Please select an answer first!');
+        return;
+      }
+      const answerValue = selectedOption.value;
+      resultBox.style.display = 'block';
+
+      if (answerValue === '16') {
+        resultBox.textContent = 'Demo evaluation: 1 / 1 correct · 100%. Great work!';
+      } else {
+        resultBox.textContent = 'Demo evaluation: 0 / 1 correct · 0%. The correct answer is 16. Try reviewing the lesson notes.';
+      }
+    });
+  </script>
+</body>
+</html>
